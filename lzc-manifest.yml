@@ -1,0 +1,34 @@
+lzc-sdk-version: 0.1
+package: cloud.lazycat.app.netatalk3
+version: 0.0.1
+name: Apple 时间机器备份
+description: 
+license: https://choosealicense.com/licenses/mit/
+homepage: https://github.com/Netatalk/netatalk
+author: Netatalk
+application:
+  subdomain: netatalk3
+  routes:
+    - /=file:///lzcapp/pkg/content/
+  handlers:
+    error_page_templates:
+      '502': /lzcapp/pkg/content/502.html.tpl
+  background_task: true
+  user_app: false
+  ingress:
+    - protocol: udp
+      port: 548
+      service: netatalk3
+    - protocol: tcp
+      port: 548
+      service: netatalk3
+services:
+  netatalk3:
+    image: netatalk/netatalk3:latest
+    environment:
+      - "AFP_USER=netatalk"
+      - "AFP_PASS=lzcatalk"
+    binds:
+      - /lzcapp/run/mnt/home/netatalk/afpshare:/mnt/afpshare
+      - /lzcapp/run/mnt/home/netatalk/afpbackup:/mnt/afpbackup
+      # - /var/run/dbus:/var/run/dbus
