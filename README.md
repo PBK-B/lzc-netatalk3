@@ -29,3 +29,13 @@ lzc-cli project devshell -b
 
 ## 交流和帮助
 你可以在 https://bbs.lazycat.cloud/ 畅所欲言。
+
+## 相关连接
+
+tmutil <https://ss64.com/mac/tmutil.html>
+
+Mac OS X：使用 afp:// URL 或 mount_afp 命令装载共享文件夹 <https://support.apple.com/101259>
+
+<https://netatalk.io/>
+
+<https://arstechnica.com/gadgets/2007/10/mac-os-x-10-5/14/>

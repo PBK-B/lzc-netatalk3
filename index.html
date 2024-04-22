@@ -9,8 +9,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome use netatalk3 server</title>
+    <style lang="css" type="text/css">
+        code {
+           padding: 6px 8px;
+           background-color: #F2F2F2; 
+           border-radius: 3px;
+        }
+    </style>
 </head>
 <body>
     <p>welcome use netatalk3 server.</p>
+    <h3>将此服务添加到<span>时间机器</span></h3>
+    <p>打开终端，执行</p>
+    <code id="script_code">sudo tmutil setdestination -a afp://netatalk:lzcatalk@netatalk3.boxname.heiyu.space/TimeMachine</code>
+    <p>完成服务器挂载，打开时间机器设置，选择 <span id="disk_name">Time Machine - netatalk3.boxname.heiyu.space</span> 磁盘</p>
+    <script lang="javascript" type="text/javascript">
+        let user_name = 'netatalk';
+        let user_passwd = 'lzcatalk';
+        let server_host = document.domain;
+        let _m_code = document.getElementById("script_code");
+        _m_code.innerText = `sudo tmutil setdestination -a afp://${user_name}:${user_passwd}@${server_host}/TimeMachine`;
+        let _m_disk_name = document.getElementById("disk_name");
+        _m_disk_name.innerText = `Time Machine - ${server_host}`;
+    </script>
 </body>
 </html>

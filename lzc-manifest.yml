@@ -1,6 +1,6 @@
 lzc-sdk-version: 0.1
 package: cloud.lazycat.app.netatalk3
-version: 0.0.1
+version: 0.0.2
 name: Apple 时间机器备份
 description: 
 license: https://choosealicense.com/licenses/mit/
