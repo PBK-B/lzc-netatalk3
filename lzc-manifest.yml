@@ -1,6 +1,6 @@
 lzc-sdk-version: 0.1
 package: cloud.lazycat.app.netatalk3
-version: 0.0.2
+version: 0.0.3
 name: Apple 时间机器备份
 description: 
 license: https://choosealicense.com/licenses/mit/
@@ -24,11 +24,11 @@ application:
       service: netatalk3
 services:
   netatalk3:
-    image: netatalk/netatalk3:latest
+    image: registry.lazycat.cloud/u7842111934/netatalk/netatalk3:3.2.10
     environment:
       - "AFP_USER=netatalk"
       - "AFP_PASS=lzcatalk"
     binds:
-      - /lzcapp/run/mnt/home/netatalk/afpshare:/mnt/afpshare
-      - /lzcapp/run/mnt/home/netatalk/afpbackup:/mnt/afpbackup
+      - /lzcapp/var/afpshare/afpshare:/mnt/afpshare
+      - /lzcapp/var/afpbackup:/mnt/afpbackup
       # - /var/run/dbus:/var/run/dbus

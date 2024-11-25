@@ -28,7 +28,8 @@
         let user_passwd = 'lzcatalk';
         let server_host = document.domain;
         let _m_code = document.getElementById("script_code");
-        _m_code.innerText = `sudo tmutil setdestination -a afp://${user_name}:${user_passwd}@${server_host}/Time%20Machine`;
+        const url = `sudo tmutil setdestination -a afp://${user_name}:${user_passwd}@${server_host}/Time%20Machine`
+        _m_code.innerText = url;
         let _m_disk_name = document.getElementById("disk_name");
         _m_disk_name.innerText = `Time Machine - ${server_host}`;
     </script>
