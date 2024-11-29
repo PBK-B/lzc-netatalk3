@@ -10,9 +10,9 @@ application:
   subdomain: netatalk3
   routes:
     - /=file:///lzcapp/pkg/content/
-  handlers:
-    error_page_templates:
-      '502': /lzcapp/pkg/content/502.html.tpl
+  # handlers:
+  #   error_page_templates:
+  #     '502': /lzcapp/pkg/content/502.html.tpl
   background_task: true
   user_app: false
   ingress:
@@ -24,11 +24,16 @@ application:
       service: netatalk3
 services:
   netatalk3:
-    image: registry.lazycat.cloud/u7842111934/netatalk/netatalk3:3.2.10
+    # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk3:3.2.10
+    image: registry.lazycat.cloud/app_testing/netatalk/netatalk:c4a3c475209f4af2
     environment:
+      - "AFP_GROUP=afpusers"
       - "AFP_USER=netatalk"
       - "AFP_PASS=lzcatalk"
+      - "MANUAL_CONFIG=1"
+      - "SERVER_NAME=LazyCat Server"
     binds:
       - /lzcapp/var/afpshare/afpshare:/mnt/afpshare
       - /lzcapp/var/afpbackup:/mnt/afpbackup
+      - /lzcapp/pkg/content/etc/afp.conf:/usr/local/etc/afp.conf
       # - /var/run/dbus:/var/run/dbus
