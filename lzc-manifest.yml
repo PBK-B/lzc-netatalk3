@@ -30,7 +30,7 @@ services:
     environment:
       - "AFP_GROUP=afpusers"
       - "AFP_USER=netatalk"
-      - "AFP_PASS=lzcatalk"
+      - "AFP_PASS=afpadmin"
       - "MANUAL_CONFIG=1"
       - "SERVER_NAME=LazyCat Server"
     binds:
