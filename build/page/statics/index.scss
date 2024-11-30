@@ -1,0 +1,319 @@
+body {
+    margin: 0;
+    background: #111;
+    color: #7e7e7e;
+}
+
+p {
+    margin: 0;
+    line-height: 1.5rem;
+    font-size: 0.85rem;
+}
+
+a {
+    color: #2ec1cc;
+    text-decoration: none;
+}
+
+a:active {
+    opacity: 0.6;
+}
+
+.app {
+    margin: 0 auto;
+    max-width: 930px;
+    max-width: 600px;
+
+    .first {
+        margin-top: 20px;
+    }
+
+    .container {
+        box-sizing: border-box;
+        border-radius: 0.5rem;
+        margin: 20px 15px;
+        background-color: #181b1c;
+    }
+
+    .liner {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0.5rem;
+        border: 1.25px solid #ffffff0a;
+    }
+
+    .flag {
+        padding: 20px;
+        flex-direction: row;
+
+        .icon {
+            width: 65px;
+            height: 65px;
+        }
+
+        .describe {
+            margin-left: 1rem;
+        }
+
+        .title {
+            margin: 0;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+
+        .subtitle {
+            margin-top: 0.5rem;
+        }
+    }
+
+    .tips {
+        padding: 20px;
+
+        .content {
+            margin-bottom: 0.5rem;
+
+            p {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        .statistics {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+
+            $progress_total_color: #fff1;
+            $progress_used_color: #2ec1cc;
+            $progress_data_color: #0a5eb0;
+
+            .note {
+                text-align: end;
+                font-size: 0.7rem;
+                color: #fff3;
+            }
+
+            .info {
+                display: flex;
+                flex-direction: row;
+
+                @media (max-width: 600px) {
+                    flex-direction: column;
+
+                    .blocks {
+                        margin-top: 0.5rem;
+
+                        .item:first-child {
+                            flex: 1;
+                            padding-left: 18px;
+                        }
+                    }
+                }
+
+                .head {
+                    flex: 1;
+
+                    .title {
+                        margin: 0;
+                        color: #bbb;
+                        line-height: 1.5rem;
+                        margin-bottom: 0.25rem;
+                    }
+                }
+
+                .blocks {
+                    display: flex;
+                    flex-direction: row;
+
+                    .item {
+                        padding-left: 2rem;
+
+                        .key {
+                            position: relative;
+
+                            &::before {
+                                display: flex;
+                                content: "";
+                                width: 6px;
+                                height: 6px;
+                                position: absolute;
+                                border-radius: 100px;
+                                left: -12px;
+                                top: calc(50% - 3px);
+                            }
+                        }
+
+                        .key.total::before {
+                            background-color: $progress_total_color;
+                        }
+                        .key.used::before {
+                            background-color: $progress_used_color;
+                        }
+                        .key.data::before {
+                            background-color: $progress_data_color;
+                        }
+
+                        .value {
+                            font-weight: 500;
+                            color: #bbb;
+                        }
+                    }
+                }
+            }
+
+            .progress {
+                width: 100%;
+                height: 0.5rem;
+                overflow: hidden;
+                margin-top: 1rem;
+                border-radius: 100px;
+                margin-bottom: 0.2rem;
+                background-color: $progress_total_color;
+
+                div {
+                    height: 100%;
+                }
+
+                .used {
+                    width: 0%;
+                    border-radius: 100px;
+                    background-color: $progress_used_color;
+                }
+
+                .data {
+                    width: 0%;
+                    background-color: $progress_data_color;
+                }
+            }
+        }
+    }
+
+    .steps {
+        .handle {
+            padding: 20px;
+            padding-bottom: 0;
+
+            .title {
+                margin: 0;
+                color: #bbb;
+                line-height: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        .panel {
+            margin: 1.25rem 0;
+            padding: 1.25rem 20px;
+            box-sizing: border-box;
+            border: 0 solid #ffffff0a;
+            border-top-width: 1px;
+            border-bottom-width: 1px;
+
+            .article {
+                .item {
+                    display: flex;
+                    flex-direction: row;
+                    padding: 0.5rem 0;
+                }
+
+                .appicon {
+                    width: 32px;
+                    height: 32px;
+                    margin-right: 0.5rem;
+                }
+
+                code.bash {
+                    margin-top: 0.3rem;
+                    word-break: break-all;
+                }
+
+                .box {
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .stage {
+                    code {
+                        padding: 2px 8px;
+                        line-height: 1rem;
+                        font-size: 0.75rem;
+                        word-break: break-all;
+                    }
+
+                    button {
+                        font-size: 0.75rem;
+                        font-weight: 500;
+                        padding: 2px 8px;
+                        line-height: 1rem;
+                        text-transform: none;
+                        font-family: inherit;
+                        box-sizing: border-box;
+                        border: 0 solid #e5e7eb;
+                        border-radius: 0.25rem;
+                        -webkit-appearance: button;
+                        font-feature-settings: inherit;
+                        font-variation-settings: inherit;
+                        background-color: transparent;
+                        box-shadow:
+                            0 0 #0000,
+                            0 0 #0000,
+                            0 1px 2px 0 rgba(0, 0, 0, 0.05);
+                    }
+
+                    button:disabled {
+                        cursor: default;
+                    }
+
+                    button.primary {
+                        color: #fffb;
+                        background-image: linear-gradient(to bottom, #226de5, #195ecd);
+                    }
+
+                    button.secondary {
+                        color: #fffb;
+                        background-color: #5e5e5e;
+                    }
+
+                    .copy {
+                        user-select: none;
+                        font-size: 0.85rem;
+                        display: inline-flex;
+                    }
+                }
+
+                #article_geek {
+                    display: none;
+                }
+            }
+        }
+
+        .content {
+            padding: 0 20px;
+            margin-bottom: 1rem;
+
+            p {
+                margin-bottom: 0.5rem;
+            }
+        }
+    }
+
+    .declare {
+        text-align: center;
+        margin-bottom: 1rem;
+
+        .loved {
+            display: inline-block;
+            animation: heartbeat 0.8s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.06);
+            }
+        }
+    }
+}

@@ -1,0 +1,261 @@
+body {
+  margin: 0;
+  background: #111;
+  color: #7e7e7e;
+}
+
+p {
+  margin: 0;
+  line-height: 1.5rem;
+  font-size: 0.85rem;
+}
+
+a {
+  color: #2ec1cc;
+  text-decoration: none;
+}
+
+a:active {
+  opacity: 0.6;
+}
+
+.app {
+  margin: 0 auto;
+  max-width: 930px;
+  max-width: 600px;
+}
+.app .first {
+  margin-top: 20px;
+}
+.app .container {
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  margin: 20px 15px;
+  background-color: #181b1c;
+}
+.app .liner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  border: 1.25px solid rgba(255, 255, 255, 0.0392156863);
+}
+.app .flag {
+  padding: 20px;
+  flex-direction: row;
+}
+.app .flag .icon {
+  width: 65px;
+  height: 65px;
+}
+.app .flag .describe {
+  margin-left: 1rem;
+}
+.app .flag .title {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #fff;
+}
+.app .flag .subtitle {
+  margin-top: 0.5rem;
+}
+.app .tips {
+  padding: 20px;
+}
+.app .tips .content {
+  margin-bottom: 0.5rem;
+}
+.app .tips .content p {
+  margin-bottom: 1.5rem;
+}
+.app .tips .statistics {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+.app .tips .statistics .note {
+  text-align: end;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.2);
+}
+.app .tips .statistics .info {
+  display: flex;
+  flex-direction: row;
+}
+@media (max-width: 600px) {
+  .app .tips .statistics .info {
+    flex-direction: column;
+  }
+  .app .tips .statistics .info .blocks {
+    margin-top: 0.5rem;
+  }
+  .app .tips .statistics .info .blocks .item:first-child {
+    flex: 1;
+    padding-left: 18px;
+  }
+}
+.app .tips .statistics .info .head {
+  flex: 1;
+}
+.app .tips .statistics .info .head .title {
+  margin: 0;
+  color: #bbb;
+  line-height: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+.app .tips .statistics .info .blocks {
+  display: flex;
+  flex-direction: row;
+}
+.app .tips .statistics .info .blocks .item {
+  padding-left: 2rem;
+}
+.app .tips .statistics .info .blocks .item .key {
+  position: relative;
+}
+.app .tips .statistics .info .blocks .item .key::before {
+  display: flex;
+  content: "";
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  border-radius: 100px;
+  left: -12px;
+  top: calc(50% - 3px);
+}
+.app .tips .statistics .info .blocks .item .key.total::before {
+  background-color: rgba(255, 255, 255, 0.0666666667);
+}
+.app .tips .statistics .info .blocks .item .key.used::before {
+  background-color: #2ec1cc;
+}
+.app .tips .statistics .info .blocks .item .key.data::before {
+  background-color: #0a5eb0;
+}
+.app .tips .statistics .info .blocks .item .value {
+  font-weight: 500;
+  color: #bbb;
+}
+.app .tips .statistics .progress {
+  width: 100%;
+  height: 0.5rem;
+  overflow: hidden;
+  margin-top: 1rem;
+  border-radius: 100px;
+  margin-bottom: 0.2rem;
+  background-color: rgba(255, 255, 255, 0.0666666667);
+}
+.app .tips .statistics .progress div {
+  height: 100%;
+}
+.app .tips .statistics .progress .used {
+  width: 0%;
+  border-radius: 100px;
+  background-color: #2ec1cc;
+}
+.app .tips .statistics .progress .data {
+  width: 0%;
+  background-color: #0a5eb0;
+}
+.app .steps .handle {
+  padding: 20px;
+  padding-bottom: 0;
+}
+.app .steps .handle .title {
+  margin: 0;
+  color: #bbb;
+  line-height: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.app .steps .panel {
+  margin: 1.25rem 0;
+  padding: 1.25rem 20px;
+  box-sizing: border-box;
+  border: 0 solid rgba(255, 255, 255, 0.0392156863);
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+}
+.app .steps .panel .article .item {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5rem 0;
+}
+.app .steps .panel .article .appicon {
+  width: 32px;
+  height: 32px;
+  margin-right: 0.5rem;
+}
+.app .steps .panel .article code.bash {
+  margin-top: 0.3rem;
+  word-break: break-all;
+}
+.app .steps .panel .article .box {
+  display: flex;
+  flex-direction: column;
+}
+.app .steps .panel .article .stage code {
+  padding: 2px 8px;
+  line-height: 1rem;
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+.app .steps .panel .article .stage button {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  line-height: 1rem;
+  text-transform: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  border: 0 solid #e5e7eb;
+  border-radius: 0.25rem;
+  -webkit-appearance: button;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  background-color: transparent;
+  box-shadow: 0 0 rgba(0, 0, 0, 0), 0 0 rgba(0, 0, 0, 0), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.app .steps .panel .article .stage button:disabled {
+  cursor: default;
+}
+.app .steps .panel .article .stage button.primary {
+  color: rgba(255, 255, 255, 0.7333333333);
+  background-image: linear-gradient(to bottom, #226de5, #195ecd);
+}
+.app .steps .panel .article .stage button.secondary {
+  color: rgba(255, 255, 255, 0.7333333333);
+  background-color: #5e5e5e;
+}
+.app .steps .panel .article .stage .copy {
+  user-select: none;
+  font-size: 0.85rem;
+  display: inline-flex;
+}
+.app .steps .panel .article #article_geek {
+  display: none;
+}
+.app .steps .content {
+  padding: 0 20px;
+  margin-bottom: 1rem;
+}
+.app .steps .content p {
+  margin-bottom: 0.5rem;
+}
+.app .declare {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.app .declare .loved {
+  display: inline-block;
+  animation: heartbeat 0.8s infinite;
+}
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/*# sourceMappingURL=index.css.map */

@@ -1,6 +1,6 @@
 lzc-sdk-version: 0.1
 package: cloud.lazycat.app.netatalk3
-version: 0.0.3
+version: 0.0.4
 name: Apple 时间机器备份
 description: 
 license: https://choosealicense.com/licenses/mit/
@@ -9,7 +9,8 @@ author: Netatalk
 application:
   subdomain: netatalk3
   routes:
-    - /=file:///lzcapp/pkg/content/
+    - /=file:///lzcapp/pkg/content/page
+    - /disk.json=exec://8081,/lzcapp/pkg/content/script/backend
   # handlers:
   #   error_page_templates:
   #     '502': /lzcapp/pkg/content/502.html.tpl
@@ -24,8 +25,8 @@ application:
       service: netatalk3
 services:
   netatalk3:
-    # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk3:3.2.10
-    image: registry.lazycat.cloud/app_testing/netatalk/netatalk:c4a3c475209f4af2
+    image: registry.lazycat.cloud/u7842111934/netatalk/netatalk3:3.2.10
+    # image: registry.lazycat.cloud/app_testing/netatalk/netatalk:c4a3c475209f4af2
     environment:
       - "AFP_GROUP=afpusers"
       - "AFP_USER=netatalk"

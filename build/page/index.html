@@ -1,0 +1,339 @@
+<!--
+ * @Author: Bin
+ * @Date: 2024-03-29
+ * @FilePath: /lzc-netatalk3/build/page/index.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome use netatalk3 server</title>
+    <link rel="preload" as="image" href="./statics/lazycat.png">
+    <style lang="css" type="text/css">
+        code {
+            padding: 6px 8px;
+            background-color: #F2F2F2;
+            border-radius: 3px;
+        }
+    </style>
+    <link rel="stylesheet" href="./statics/index.css" crossorigin="" data-precedence="next">
+    <script src="./statics/clipboard.min.js"></script>
+</head>
+
+<body>
+
+    <div class="app">
+        <div class="container first">
+            <div class="liner flag">
+                <img class="icon" alt="Backup your Mac logo" src="./statics/lazycat.png" />
+                <div class="describe">
+                    <h1 class="title">备份您的 Mac</h1>
+                    <p class="subtitle">使用时间机器将 Mac 随时备份到 懒猫微服</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="liner tips">
+                <div class="statistics">
+                    <div class="info">
+                        <div class="head">
+                            <h3 class="title">数据盘统计</h3>
+                            <p>此处为文件系统预估值</p>
+                        </div>
+                        <div class="blocks">
+                            <div class="item">
+                                <p class="key total">空间总计</p>
+                                <p id="disk_total_value" class="value"></p>
+                            </div>
+                            <div class="item">
+                                <p class="key used">已使用</p>
+                                <p id="disk_used_value" class="value"></p>
+                            </div>
+                            <div class="item">
+                                <p class="key data">备份占用</p>
+                                <p id="disk_data_value" class="value"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="disk_progress_total" class="progress">
+                        <div id="disk_progress_used" class="used">
+                            <div id="disk_progress_data" class="data"></div>
+                        </div>
+                    </div>
+                    <p class="note">* 实际使用情况以系统统计为准</p>
+                </div>
+                <div class="content">
+                    <p>Time Machine 通过保留过去 24 小时的每小时备份、上个月的每日备份和之前所有月份的每周备份来备份您的 Mac。</p>
+                    <p>随着时间的推移，Time Machine 可能会使用 懒猫微服 最大占用 1TB 可用磁盘大小 (默认配置)
+                        ，超过最大占用磁盘限制后会自动删除最旧的备份以释放空间，也可以手动删除备份文件以释放空间。</p>
+                    <p style="margin-bottom: 0;">虽然 AFP 有默认配置最大占用大小限制，但还是 <b
+                            style="color: #fffC;">推荐按照以下配置步骤适当分配备份大小</b> ，这可确保 懒猫微服 上其他应用程序的最佳性能，因为有限的存储空间可能会影响其功能。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="liner steps">
+                <div class="handle">
+                    <h3 class="title">配置步骤</h3>
+                    <p>在 Mac 上按照以下步骤启动 Time Machine 备份，您是极客玩家？<a id="button_geek">戳我！</a>试试通过终端 (Terminal)
+                        快速添加备份盘</p>
+                </div>
+                <div class="panel">
+                    <div>
+                        <p></p>
+                    </div>
+                    <div class="article">
+
+                        <div id="article_geek" style="display: none;">
+                            <div class="item">
+                                <img class="appicon" src="./statics/terminal.png" />
+                                <div class="box">
+                                    <p class="stage">在 Terminal 中执行以下命令</p>
+                                    <code id="bash_code" class="bash">
+                                        $ sudo tmutil setdestination -a afp://${user}:${password}@${host}/Time%20Machine
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="article_user">
+                            <div class="item">
+                                <img class="appicon" src="./statics/finder.png" />
+                                <p class="stage">
+                                    打开 Finder，然后按下快捷键 <button class="secondary">⌘K</button> 或者菜单栏 "前往" -> "连接服务器…"
+                                </p>
+                            </div>
+
+                            <div class="item">
+                                <img class="appicon" src="./statics/finder.png" />
+                                <p class="stage">
+                                    输入服务器地址
+                                    <code id="server_url_code">afp://netatalk3.${boxname}.heiyu.space</code>
+                                    <a id="button_copy" class="primary copy">
+                                        <span style="margin: 0 4px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="11"
+                                                viewBox="0 0 12 13" fill="none">
+                                                <path
+                                                    d="M7.98047 1.09912V2.10693H1.98047V9.11475H0.996094V2.10693C0.996094 1.56787 1.44141 1.09912 1.98047 1.09912H7.98047ZM9.48047 3.11475C10.043 3.11475 10.4883 3.56006 10.4883 4.09912V11.1069C10.4883 11.646 10.043 12.1147 9.48047 12.1147H3.99609C3.43359 12.1147 2.98828 11.646 2.98828 11.1069V4.09912C2.98828 3.56006 3.43359 3.11475 3.99609 3.11475H9.48047ZM9.48047 11.1069V4.09912H3.99609V11.1069H9.48047Z"
+                                                    fill="#2ec1cc" />
+                                            </svg>
+                                        </span>
+                                        复制地址
+                                    </a>
+                                    然后点击 <button class="primary">连接</button>
+                                </p>
+                            </div>
+
+                            <div class="item">
+                                <img class="appicon" src="./statics/finder.png" />
+                                <p class="stage">
+                                    如果提示需要输入用户名和密码，可以填写默认用户名: "<span id="server_user">netatalk</span>" 密码: "<span
+                                        id="server_password">lzcatalk</span>"
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <img class="appicon" src="./statics/settings.png" />
+                            <p class="stage">
+                                打开 系统设置 (System Settings)，选择 "通用"
+                            </p>
+                        </div>
+
+                        <div class="item">
+                            <img class="appicon" src="./statics/time-machine.png" />
+                            <p class="stage">
+                                打开 时间机器 (Time Machine)，点击 <button class="secondary">添加备份磁盘…</button>
+                            </p>
+                        </div>
+
+                        <div class="item">
+                            <img class="appicon" src="./statics/time-machine.png" />
+                            <p class="stage">
+                                选择 "<span id="server_disk_name">Time Machine -
+                                    netatalk3.${name}.heiyu.space</span>"，然后点击 <button class="primary">设置磁盘…</button>
+                            </p>
+                        </div>
+
+                        <div class="item">
+                            <img class="appicon" src="./statics/time-machine.png" />
+                            <p class="stage">
+                                关于 "磁盘使用限制"，指定要在 懒猫微服 上为 Time Machine 备份分配的最大空间量，然后单击
+                                <button class="secondary">完成</button>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="content">
+                    <p>Tips: 无需额外配置，打开客户端即可无缝备份，即使您的 Mac 与 懒猫微服 不在同一局域网络内也能随时备份您的系统。</p>
+                    <p>我们使用
+                        <a href="https://en.wikipedia.org/wiki/Apple_Filing_Protocol" target="_blank">Apple Filing
+                            Protocol</a>
+                        (AFP) 作为远程备份服务，相比 Samba 更快、更稳定、更 Apple！在此感谢
+                        <a href="https://github.com/Netatalk/netatalk" target="_blank">Netatalk</a>
+                        及社区贡献者。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <p class="declare">Made with <span class="loved">❤️</span> by the Lazycat Micro Server Team.</p>
+
+
+        <!-- <h3>将此服务添加到<span>时间机器</span></h3>
+        <p>打开终端，执行</p>
+        <code
+            id="script_code">sudo tmutil setdestination -a afp://netatalk:lzcatalk@netatalk3.boxname.heiyu.space/Time%20Machine</code>
+        <p>完成服务器挂载，打开时间机器设置，选择 <span id="disk_name">Time Machine - netatalk3.boxname.heiyu.space</span> 磁盘</p> -->
+    </div>
+
+    <script lang="javascript" type="text/javascript">
+
+        const dom_ids = {
+            d_t_v: "disk_total_value",
+            d_u_v: "disk_used_value",
+            d_du_v: "disk_data_value",
+            d_p_t: "disk_progress_total",
+            d_p_u: "disk_progress_used",
+            d_p_d: "disk_progress_data",
+            steps: {
+                url_code: "server_url_code",
+                user_text: "server_user",
+                password_text: "server_password",
+                disk_name_text: "server_disk_name",
+                button_geek: "button_geek",
+                article_geek: "article_geek",
+                article_user: "article_user",
+                bash_code: "bash_code",
+            }
+        };
+
+        function ByteUnitConvert(bytes, decimals = 2) {
+            if (bytes <= 0 || bytes === undefined) return '0B';
+            const flag = Object.prototype.toString.call(bytes) === '[object String]';
+            if (flag) bytes = bytes.toString();
+            let k = 1024,
+                dm = decimals ?? 2,
+                sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + sizes[i];
+        }
+
+        function loadDiskView(total, used, data) {
+            const d_t_v = document.getElementById(dom_ids.d_t_v);
+            const d_u_v = document.getElementById(dom_ids.d_u_v);
+            const d_du_v = document.getElementById(dom_ids.d_du_v);
+            const d_p_t = document.getElementById(dom_ids.d_p_t);
+            const d_p_u = document.getElementById(dom_ids.d_p_u);
+            const d_p_d = document.getElementById(dom_ids.d_p_d);
+
+            const p_used = used / total;
+            const p_data = data / used;
+            // console.log('p_data', p_data, 'p_used', p_used);
+
+            if (total && d_t_v) {
+                d_t_v.innerText = ByteUnitConvert(total, 0);
+            }
+            if (used && d_u_v) {
+                d_u_v.innerText = ByteUnitConvert(used, 0);
+            }
+            if (data && d_du_v) {
+                d_du_v.innerText = ByteUnitConvert(data, 0);
+            }
+            if (p_used && d_p_u) {
+                d_p_u.style.width = `${p_used.toFixed(2)}%`;
+            }
+            if (p_data && d_p_d) {
+                d_p_d.style.width = `${p_data.toFixed(2)}%`;
+            }
+
+        }
+
+        function loadStepsView(host, user, password) {
+            const url_code = document.getElementById(dom_ids.steps.url_code);
+            const user_text = document.getElementById(dom_ids.steps.user_text);
+            const password_text = document.getElementById(dom_ids.steps.password_text);
+            const disk_name_text = document.getElementById(dom_ids.steps.disk_name_text);
+            const bash_code = document.getElementById(dom_ids.steps.bash_code);
+
+            const full_url = `afp://${user}:${password}@${host}/Time%20Machine`;
+
+            if (url_code) {
+                url_code.innerText = full_url;
+            }
+            if (user_text) {
+                user_text.innerText = `${user}`;
+            }
+            if (password_text) {
+                password_text.innerText = `${password}`;
+            }
+            if (disk_name_text) {
+                disk_name_text.innerText = `Time Machine - ${host}`;
+            }
+            if (bash_code) {
+                bash_code.innerText = `$ sudo tmutil setdestination -a afp://${user}:${password}@${host}/Time%20Machine`;
+            }
+
+            new ClipboardJS('#button_copy', {
+                text: function (trigger) {
+                    return full_url;
+                }
+            });
+        }
+
+        function initView() {
+            const button_geek = document.getElementById(dom_ids.steps.button_geek);
+            const article_geek = document.getElementById(dom_ids.steps.article_geek);
+            const article_user = document.getElementById(dom_ids.steps.article_user);
+
+            function showArticleGeek() {
+                if (!article_geek || !article_user) {
+                    return
+                }
+                if (article_geek.style.display == "none") {
+                    article_geek.style.display = "block";
+                    article_user.style.display = "none";
+                } else {
+                    article_geek.style.display = "none";
+                    article_user.style.display = "block";
+                }
+            }
+
+            if (button_geek) {
+                button_geek.addEventListener("click", showArticleGeek)
+            }
+        }
+
+        fetch("./disk.json")
+            .then((response) => response.json())
+            .then((data) => {
+                // console.log(data);
+                loadDiskView(data.disk_total, data.disk_used, data.data_used)
+            });
+
+        let user_name = 'netatalk';
+        let user_passwd = 'lzcatalk';
+        let server_host = document.domain;
+
+        initView();
+        loadStepsView(server_host, user_name, user_passwd);
+
+        // let _m_code = document.getElementById("script_code");
+        // if (_m_code) {
+        //     const url = `sudo tmutil setdestination -a afp://${user_name}:${user_passwd}@${server_host}/Time%20Machine`
+        //     _m_code.innerText = url;
+        // }
+        // let _m_disk_name = document.getElementById("disk_name");
+        // if (_m_disk_name) {
+        //     _m_disk_name.innerText = `Time Machine - ${server_host}`;
+        // }
+    </script>
+</body>
+
+</html>
