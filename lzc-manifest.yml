@@ -1,6 +1,6 @@
 lzc-sdk-version: 0.1
 package: cloud.lazycat.app.netatalk3
-version: 0.0.4
+version: 0.0.5
 name: Apple 时间机器备份
 description: 
 license: https://choosealicense.com/licenses/mit/
@@ -34,7 +34,7 @@ services:
       - "MANUAL_CONFIG=1"
       - "SERVER_NAME=LazyCat Server"
     binds:
-      - /lzcapp/var/afpshare/afpshare:/mnt/afpshare
+      - /lzcapp/var/afpshare:/mnt/afpshare
       - /lzcapp/var/afpbackup:/mnt/afpbackup
       - /lzcapp/pkg/content/etc/afp.conf:/usr/local/etc/afp.conf
       # - /var/run/dbus:/var/run/dbus
