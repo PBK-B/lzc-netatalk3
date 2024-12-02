@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -12,10 +13,10 @@ const DATA_PATH = "/lzcapp/var/"
 const MNT_PATH = "/lzcapp/var/"
 
 type DiskInfo struct {
-	DiskTotal     string `json:"disk_total"`
-	DiskUsed      string `json:"disk_used"`
-	DiskAvailable string `json:"disk_available"`
-	DataUsed      string `json:"data_used"`
+	DiskTotal     int `json:"disk_total"`
+	DiskUsed      int `json:"disk_used"`
+	DiskAvailable int `json:"disk_available"`
+	DataUsed      int `json:"data_used"`
 }
 
 func getDiskInfo() (DiskInfo, error) {
@@ -37,9 +38,12 @@ func getDiskInfo() (DiskInfo, error) {
 	if len(fields) < 4 {
 		return diskInfo, fmt.Errorf("unexpected df output format")
 	}
-	diskInfo.DiskTotal = fields[1]
-	diskInfo.DiskUsed = fields[2]
-	diskInfo.DiskAvailable = fields[3]
+	diskTotal, _ := strconv.Atoi(fields[1])
+	diskUsed, _ := strconv.Atoi(fields[2])
+	diskAvailable, _ := strconv.Atoi(fields[3])
+	diskInfo.DiskTotal = diskTotal * 1000 // 由于 df 获取到的单位为 kb 所以都需要转 b
+	diskInfo.DiskUsed = diskUsed * 1000
+	diskInfo.DiskAvailable = diskAvailable * 1000
 
 	// 获取 /data/code 的已使用大小
 	duOutput, err := exec.Command("du", "-s", DATA_PATH).Output()
@@ -49,7 +53,8 @@ func getDiskInfo() (DiskInfo, error) {
 
 	duFields := strings.Fields(string(duOutput))
 	if len(duFields) > 0 {
-		diskInfo.DataUsed = duFields[0]
+		dataUsed, _ := strconv.Atoi(duFields[0])
+		diskInfo.DataUsed = dataUsed * 1000
 	} else {
 		return diskInfo, fmt.Errorf("failed to parse du output")
 	}

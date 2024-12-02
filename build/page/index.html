@@ -12,6 +12,10 @@
     <title>Welcome use netatalk3 server</title>
     <link rel="preload" as="image" href="./statics/lazycat.png">
     <style lang="css" type="text/css">
+        * {
+            font-family: "PingFangSC-Regular, sans-serif";
+        }
+
         code {
             padding: 6px 8px;
             background-color: #F2F2F2;
@@ -214,11 +218,11 @@
             }
         };
 
-        function ByteUnitConvert(bytes, decimals = 2) {
+        function ByteUnitConvert(bytes, base = 1024, decimals = 2) {
             if (bytes <= 0 || bytes === undefined) return '0B';
             const flag = Object.prototype.toString.call(bytes) === '[object String]';
             if (flag) bytes = bytes.toString();
-            let k = 1024,
+            let k = base,
                 dm = decimals ?? 2,
                 sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
                 i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -237,22 +241,25 @@
             const p_data = data / used;
             // console.log('p_data', p_data, 'p_used', p_used);
 
-            if (total && d_t_v) {
-                d_t_v.innerText = ByteUnitConvert(total, 0);
+            const tbnum = 1000000000000
+            if (total != undefined && d_t_v) {
+                d_t_v.innerText = ByteUnitConvert(total, 1000, total > tbnum ? 1 : 0);
             }
-            if (used && d_u_v) {
-                d_u_v.innerText = ByteUnitConvert(used, 0);
-            }
-            if (data && d_du_v) {
-                d_du_v.innerText = ByteUnitConvert(data, 0);
-            }
-            if (p_used && d_p_u) {
-                d_p_u.style.width = `${p_used.toFixed(2)}%`;
-            }
-            if (p_data && d_p_d) {
-                d_p_d.style.width = `${p_data.toFixed(2)}%`;
-            }
+            if (used != undefined && d_u_v) {
 
+                d_u_v.innerText = ByteUnitConvert(used, 1000, used > tbnum ? 1 : 0);
+            }
+            if (data != undefined && d_du_v) {
+                d_du_v.innerText = ByteUnitConvert(data, 1000, data > tbnum ? 1 : 0);
+            }
+            if (p_used != undefined && d_p_u) {
+                let value = (Number(p_used.toFixed(2)) ?? 0) * 100
+                d_p_u.style.width = `${value}%`;
+            }
+            if (p_data != undefined && d_p_d) {
+                let value = (Number(p_data.toFixed(2)) ?? 0) * 100
+                d_p_d.style.width = `${value}%`;
+            }
         }
 
         function loadStepsView(host, user, password) {
