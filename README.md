@@ -30,6 +30,11 @@ lzc-cli project devshell -b
 ## 交流和帮助
 你可以在 https://bbs.lazycat.cloud/ 畅所欲言。
 
+升级 Netatalk 版本至 3.2.10 
+提供用户友好的备份指引页面
+修复磁盘统计数据展示问题
+注意: 0.0.3 不兼容更新, 新版本需要数据迁移或者重新备份数据
+
 ## 相关连接
 
 tmutil <https://ss64.com/mac/tmutil.html>
