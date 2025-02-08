@@ -6,6 +6,13 @@ description:
 license: https://choosealicense.com/licenses/mit/
 homepage: https://github.com/Netatalk/netatalk
 author: Netatalk
+locales:
+  zh:
+    name: "Apple 时间机器备份"
+  en:
+    name: "Time Machine Server"
+  ja:
+    name: "タイムマシンサーバー"
 application:
   subdomain: netatalk3
   routes:
