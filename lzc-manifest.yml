@@ -1,6 +1,6 @@
 lzc-sdk-version: 0.1
 package: cloud.lazycat.app.netatalk
-version: 0.0.7
+version: 0.0.8
 name: Apple 时间机器备份
 description: 
 license: https://choosealicense.com/licenses/mit/
@@ -33,9 +33,9 @@ application:
       service: netatalk
 services:
   netatalk:
-    # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:867e0f8860fa7602 # 4.2.3
+    image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:867e0f8860fa7602 # 4.2.3
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:be2628c05e46154d # 4.2.2
-    image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:bf35131453c46c76 # 4.2.1
+    # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:bf35131453c46c76 # 4.2.1
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:bd563185e238c1cb # 4.1.2
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:9111fd7a91682109 # 4.1.1
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk3:3.2.10
@@ -50,5 +50,5 @@ services:
     binds:
       - /lzcapp/var/afpshare:/mnt/afpshare
       - /lzcapp/var/afpbackup:/mnt/afpbackup
-      - /lzcapp/pkg/content/etc/afp.conf:/usr/local/etc/afp.conf
+      - /lzcapp/pkg/content/etc/afp.conf:/etc/netatalk/afp.conf
       # - /var/run/dbus:/var/run/dbus
