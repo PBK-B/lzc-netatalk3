@@ -16,7 +16,7 @@ pkgout: ./
 
 # icon 指定 lpk 包 icon 的路径路径，如果不指定将会警告
 # icon 仅仅允许 png 后缀的文件
-icon: ./lazycat.png
+icon: ./icon.png
 # devshell 自定义应用的开发容器环境
 # - routers 指定应用容器的访问路由
 

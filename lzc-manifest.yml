@@ -1,11 +1,12 @@
 lzc-sdk-version: 0.1
-package: cloud.lazycat.app.netatalk3
-version: 0.0.6
+package: cloud.lazycat.app.netatalk
+version: 0.0.7
 name: Apple 时间机器备份
 description: 
 license: https://choosealicense.com/licenses/mit/
 homepage: https://github.com/Netatalk/netatalk
 author: Netatalk
+min_os_version: 1.2.1
 locales:
   zh:
     name: "Apple 时间机器备份"
@@ -14,7 +15,7 @@ locales:
   ja:
     name: "タイムマシンサーバー"
 application:
-  subdomain: netatalk3
+  subdomain: netatalk
   routes:
     - /=file:///lzcapp/pkg/content/page
     - /disk.json=exec://8081,/lzcapp/pkg/content/script/backend
@@ -26,15 +27,20 @@ application:
   ingress:
     - protocol: udp
       port: 548
-      service: netatalk3
+      service: netatalk
     - protocol: tcp
       port: 548
-      service: netatalk3
+      service: netatalk
 services:
-  netatalk3:
-    image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:9111fd7a91682109
+  netatalk:
+    # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:867e0f8860fa7602 # 4.2.3
+    # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:be2628c05e46154d # 4.2.2
+    image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:bf35131453c46c76 # 4.2.1
+    # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:bd563185e238c1cb # 4.1.2
+    # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:9111fd7a91682109 # 4.1.1
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk3:3.2.10
     # image: registry.lazycat.cloud/app_testing/netatalk/netatalk:c4a3c475209f4af2
+    network_mode: host
     environment:
       - "AFP_GROUP=afpusers"
       - "AFP_USER=netatalk"
