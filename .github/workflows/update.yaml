@@ -34,9 +34,6 @@ jobs:
             - name: Install Updatecli in the runner
               uses: updatecli/updatecli-action@v2
 
-            - name: Test lzc-cli
-              run: "npx -y @lazycatcloud/lzc-cli appstore my-images"
-
             # - name: Run Updatecli in Dry Run mode
             #   run: "updatecli diff --config ./deploy/updatecli.d"
             #   env:

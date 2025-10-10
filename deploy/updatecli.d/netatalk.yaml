@@ -9,12 +9,15 @@ x-changedif: &shared-changedif
 
 scms:
   default:
-    kind: "git"
+    kind: "github"
     spec:
-      url: "https://github.com/PBK-B/lzc-netatalk3.git"
-      branch: master
-      user: "updatecli"
+      user: "PBK-B"
+      owner: "PBK-B"
+      repository: "lzc-netatalk3"
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      username: 'updatecli'
       email: "updatecli@pbk6.cn"
+      branch: master
       commitmessage:
         type: "chore"
         scope: "(deps)"
@@ -94,7 +97,7 @@ actions:
   default:
     title: Open a GitHub pull request with new Netatalk version
     kind: github/pullrequest
-    scmID: default
+    scmid: default
     target:
       - updateVersion
     spec:
