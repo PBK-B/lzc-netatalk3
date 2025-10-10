@@ -23,6 +23,23 @@ scms:
         scope: "(deps)"
 
 sources:
+  nodeVersion:
+    name: "Get Node.js version"
+    kind: "shell"
+    spec:
+      command: |
+        node --version
+        npm --version
+        npx --version
+
+  checkPackageVersion:
+    name: "Check package version using Node.js"
+    kind: "shell"
+    spec:
+      command: |
+        # 使用 Node.js 脚本检查版本
+        node -e "console.log(require('./package.json').version)" || echo "No package.json"
+
   netatalkVersion:
     name: Get the latest netatalk/netatalk version
     kind: dockerimage
@@ -36,7 +53,7 @@ sources:
     kind: shell
     sourceid: netatalkVersion
     spec:
-      command: bash -c 'npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet' _
+      command: bash -c ' npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet' _
       environments:
         - name: LZC_CLI_TOKEN
           value: {{ requiredEnv "LZC_CLI_TOKEN" }}
