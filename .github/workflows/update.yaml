@@ -3,7 +3,7 @@ name: Updatecli
 on:
     # Trigger Updatecli if a new commit land on the main branch
     push:
-        branches: [master]
+        branches: [master, bin/**]
     # Trigger Updatecli if a pullrequest is open targeting the main branch.
     # This is useful to test Updatecli manifest change
     pull_request:

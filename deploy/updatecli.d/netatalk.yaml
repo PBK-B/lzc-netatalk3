@@ -33,7 +33,7 @@ sources:
     kind: shell
     sourceid: netatalkVersion
     spec:
-      command: bash -c 'source /root/.bashrc && npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet' _
+      command: bash -c 'npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet' _
   lpkImageUrl:
     name: Get LPK Image URL
     scmid: default
