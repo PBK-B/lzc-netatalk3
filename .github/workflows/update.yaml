@@ -23,6 +23,9 @@ permissions:
 jobs:
     updatecli:
         runs-on: "ubuntu-latest"
+        env:
+            UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+            LZC_CLI_TOKEN: "${{ secrets.LZC_CLI_TOKEN }}"
 
         steps:
             - name: Checkout
@@ -39,6 +42,3 @@ jobs:
 
             - name: Run Updatecli in apply mode
               run: "updatecli apply --config ./deploy/updatecli.d"
-              env:
-                  UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-                  LZC_CLI_TOKEN: "${{ secrets.LZC_CLI_TOKEN }}"
