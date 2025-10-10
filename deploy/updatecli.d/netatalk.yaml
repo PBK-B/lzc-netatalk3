@@ -1,0 +1,112 @@
+# https://www.updatecli.io/docs/core/target/
+## netatalk.yaml
+name: Update Netatalk
+
+x-changedif: &shared-changedif
+  kind: shell
+  spec:
+    command: test "{{ source "lpkImageUrl" }}" "==" "{{ source "copyImageUrl" }}"
+
+scms:
+  default:
+    kind: "github"
+    spec:
+      user: "PBK-B"
+      owner: "PBK-B"
+      repository: "lzc-netatalk3"
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      username: 'updatecli'
+      email: "updatecli@pbk6.cn"
+      branch: master
+      commitmessage:
+        type: "chore"
+        scope: "deps"
+
+sources:
+  netatalkVersion:
+    name: Get the latest netatalk/netatalk version
+    kind: dockerimage
+    disablesourceinput: true
+    spec:
+      image: netatalk/netatalk
+      versionfilter: 
+        kind: semver
+        pattern: '*'
+  copyImageUrl:
+    kind: shell
+    sourceid: netatalkVersion
+    spec:
+      command: |
+        npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet
+      environments:
+        - name: PATH # https://github.com/updatecli/updatecli/blob/045a2956/pkg/plugins/resources/shell/main.go#L98
+        - name: HOME
+        - name: SHELL
+        - name: LANG
+        - name: UPDATECLI_PIPELINE_STAGE
+        - name: LZC_CLI_TOKEN
+          value: {{ requiredEnv "LZC_CLI_TOKEN" }}
+  lpkImageUrl:
+    name: Get LPK Image URL
+    scmid: default
+    kind: yaml
+    spec:
+      file: lzc-manifest.yml
+      key: $.services.netatalk.image
+  currentVersion:
+    name: "Get current version"
+    scmid: default
+    kind: yaml
+    transformers:
+        - semverinc: patch # major / minor / patch
+    spec:
+      file: lzc-manifest.yml
+      key: $.version
+
+
+targets:
+  updateImage:
+    name: bump netatalk/netatalk docker image tag
+    scmid: default
+    kind: yaml
+    sourceid: copyImageUrl
+    spec:
+      file: lzc-manifest.yml
+      key: $.services.netatalk.image
+      changedif: *shared-changedif
+
+  updateImageCode:
+    name: bump netatalk/netatalk docker image tag code
+    scmid: default
+    kind: yaml
+    sourceid: netatalkVersion
+    spec:
+      file: lzc-manifest.yml
+      key: $.services.netatalk.mark
+      quote: false
+      changedif: *shared-changedif
+
+  updateVersion:
+    name: update version in manifest.yml
+    scmid: default
+    kind: yaml
+    dependson: ['updateImageCode']
+    dependsonchange: true
+    sourceid: currentVersion
+    spec:
+      file: lzc-manifest.yml
+      key: $.version
+      value: '{{ source "currentVersion" }}'
+
+actions:
+  default:
+    title: "[chore] bump new netatalk version 🆙"
+    kind: github/pullrequest
+    scmid: default
+    target:
+      - updateVersion
+    spec:
+      automerge: false # the repository needs to enable automatic merge permissions
+      mergemethod: squash
+      labels:
+        - dependencies

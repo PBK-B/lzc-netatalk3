@@ -1,0 +1,37 @@
+name: Updatecli
+
+on:
+    # Manually trigger Updatecli via GitHub UI
+    workflow_dispatch:
+    # Trigger Updatecli once day by a cronjob
+    schedule:
+        # * is a special character in YAML so you have to quote this string
+        # Run once a day
+        - cron: "20 03 * * *"
+
+permissions:
+    contents: "write"
+    pull-requests: "write"
+
+jobs:
+    updatecli:
+        runs-on: "ubuntu-latest"
+        env:
+            UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+            LZC_CLI_TOKEN: "${{ secrets.LZC_CLI_TOKEN }}"
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Install Updatecli in the runner
+              uses: updatecli/updatecli-action@v2
+
+            # - name: Run Updatecli in Dry Run mode
+            #   run: "updatecli diff --config ./deploy/updatecli.d"
+            #   env:
+            #       UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+            #       LZC_CLI_TOKEN: "${{ secrets.LZC_CLI_TOKEN }}"
+
+            - name: Run Updatecli in apply mode
+              run: "updatecli apply --config ./deploy/updatecli.d"
