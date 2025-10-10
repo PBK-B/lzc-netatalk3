@@ -42,6 +42,7 @@ sources:
     spec:
       command: |
         # 使用 Node.js 脚本检查版本
+        env
         npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet
 
   netatalkVersion:
@@ -58,6 +59,7 @@ sources:
     sourceid: netatalkVersion
     spec:
       command: |
+        env
         npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet
       environments:
         - name: LZC_CLI_TOKEN
