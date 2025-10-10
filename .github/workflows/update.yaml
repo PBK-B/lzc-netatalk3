@@ -34,11 +34,11 @@ jobs:
             - name: Install Updatecli in the runner
               uses: updatecli/updatecli-action@v2
 
-            - name: Run Updatecli in Dry Run mode
-              run: "updatecli diff --config ./deploy/updatecli.d"
+            # - name: Run Updatecli in Dry Run mode
+            #   run: "updatecli diff --config ./deploy/updatecli.d"
             #   env:
             #       UPDATECLI_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
             #       LZC_CLI_TOKEN: "${{ secrets.LZC_CLI_TOKEN }}"
 
-            # - name: Run Updatecli in apply mode
-            #   run: "updatecli apply --config ./deploy/updatecli.d"
+            - name: Run Updatecli in apply mode
+              run: "updatecli apply --config ./deploy/updatecli.d"
