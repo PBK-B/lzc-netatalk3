@@ -2,7 +2,7 @@ lzc-sdk-version: 0.1
 package: cloud.lazycat.app.netatalk
 version: 0.0.8
 name: Apple 时间机器备份
-description: 
+description:
 license: https://choosealicense.com/licenses/mit/
 homepage: https://github.com/Netatalk/netatalk
 author: Netatalk
@@ -33,6 +33,7 @@ application:
       service: netatalk
 services:
   netatalk:
+    mark: 4.2.3
     image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:867e0f8860fa7602 # 4.2.3
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:be2628c05e46154d # 4.2.2
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:bf35131453c46c76 # 4.2.1

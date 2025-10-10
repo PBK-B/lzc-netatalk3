@@ -1,0 +1,88 @@
+# https://www.updatecli.io/docs/core/target/
+## netatalk.yaml
+name: Update Netatalk
+
+x-changedif: &shared-changedif
+  kind: shell
+  spec:
+    command: test "{{ source "lpkImageUrl" }}" "==" "{{ source "copyImageUrl" }}"
+
+scms:
+  default:
+    kind: "git"
+    spec:
+      url: "https://github.com/PBK-B/lzc-netatalk3.git"
+      branch: master
+      user: "updatecli"
+      email: "updatecli@pbk6.cn"
+      commitmessage:
+        type: "chore"
+        scope: "(deps)"
+
+sources:
+  netatalkVersion:
+    name: Get the latest netatalk/netatalk version
+    kind: dockerimage
+    disablesourceinput: true
+    spec:
+      image: netatalk/netatalk
+      versionfilter: 
+        kind: semver
+        pattern: '*'
+  copyImageUrl:
+    kind: shell
+    sourceid: netatalkVersion
+    spec:
+      command: bash -c 'source /root/.bashrc && npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet' _
+  lpkImageUrl:
+    name: Get LPK Image URL
+    scmid: default
+    kind: yaml
+    spec:
+      file: lzc-manifest.yml
+      key: $.services.netatalk.image
+  currentVersion:
+    name: "Get current version"
+    scmid: default
+    kind: yaml
+    transformers:
+        - semverinc: patch # major / minor / patch
+    spec:
+      file: lzc-manifest.yml
+      key: $.version
+
+
+
+targets:
+  updateImage:
+    name: Bump netatalk/netatalk Docker Image Tag
+    scmid: default
+    kind: yaml
+    sourceid: copyImageUrl
+    spec:
+      file: lzc-manifest.yml
+      key: $.services.netatalk.image
+      changedif: *shared-changedif
+
+  updateImageCode:
+    name: Bump netatalk/netatalk Docker Image Tag Code
+    scmid: default
+    kind: yaml
+    sourceid: netatalkVersion
+    spec:
+      file: lzc-manifest.yml
+      key: $.services.netatalk.mark
+      quote: false
+      changedif: *shared-changedif
+
+  updateVersion:
+    name: "Update version in manifest.yml"
+    scmid: default
+    kind: yaml
+    dependson: ['updateImageCode']
+    dependsonchange: true
+    sourceid: currentVersion
+    spec:
+      file: lzc-manifest.yml
+      key: $.version
+      value: '{{ source "currentVersion" }}'
