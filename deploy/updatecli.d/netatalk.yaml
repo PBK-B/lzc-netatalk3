@@ -35,14 +35,13 @@ sources:
         which env
         /usr/bin/env
 
-
   checkPackageVersion:
     name: "Check package version using Node.js"
     kind: "shell"
     spec:
       command: |
         # 使用 Node.js 脚本检查版本
-        node -e "console.log(require('./package.json').version)" || echo "No package.json"
+        npx -y @lazycatcloud/lzc-cli --version
 
   netatalkVersion:
     name: Get the latest netatalk/netatalk version
