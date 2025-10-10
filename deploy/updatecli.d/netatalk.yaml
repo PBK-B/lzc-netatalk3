@@ -34,6 +34,9 @@ sources:
     sourceid: netatalkVersion
     spec:
       command: bash -c 'npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet' _
+      environments:
+        - name: LZC_CLI_TOKEN
+          value: {{ requiredEnv "LZC_CLI_TOKEN" }}
   lpkImageUrl:
     name: Get LPK Image URL
     scmid: default
@@ -86,3 +89,16 @@ targets:
       file: lzc-manifest.yml
       key: $.version
       value: '{{ source "currentVersion" }}'
+
+actions:
+  default:
+    title: Open a GitHub pull request with new Netatalk version
+    kind: github/pullrequest
+    scmID: default
+    target:
+      - updateVersion
+    spec:
+      automerge: true
+      mergemethod: squash
+      labels:
+        - dependencies
