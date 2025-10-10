@@ -31,6 +31,10 @@ sources:
         node --version
         npm --version
         npx --version
+        which node
+        which env
+        /usr/bin/env
+
 
   checkPackageVersion:
     name: "Check package version using Node.js"
