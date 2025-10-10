@@ -59,9 +59,9 @@ sources:
     sourceid: netatalkVersion
     spec:
       command: |
-        env
         npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet
       environments:
+        - name: PATH
         - name: LZC_CLI_TOKEN
           value: {{ requiredEnv "LZC_CLI_TOKEN" }}
   lpkImageUrl:
