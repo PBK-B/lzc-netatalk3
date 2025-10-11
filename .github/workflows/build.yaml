@@ -41,6 +41,7 @@ jobs:
         run: "npx -y lzc-cli project build"
 
       - name: "Upload Artifact"
+        id: artifact-upload-step
         uses: actions/upload-artifact@v4
         with:
           name: cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
@@ -48,4 +49,13 @@ jobs:
           retention-days: 5
 
       - name: Output artifact ID and Url
-        run: echo 'Artifact ID ${{ steps.artifact-upload-step.outputs.artifact-id }}\nUrl:${{ steps.artifact-upload-step.outputs.artifact-url }}'
+        run: echo -e "Artifact ID ${{ steps.artifact-upload-step.outputs.artifact-id }}\nUrl ${{ steps.artifact-upload-step.outputs.artifact-url }}\nPR id ${{ github.event.pull_request.id }}"
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            [LPK Build] artifact build ok! :wave:
+            artifact url: <${{ steps.artifact-upload-step.outputs.artifact-url }}>
+            test: `lzc-cli app install cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk`
+          pr-number: ${{ github.event.pull_request.id }}
