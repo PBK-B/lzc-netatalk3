@@ -43,7 +43,6 @@ sources:
         - name: HOME
         - name: SHELL
         - name: LANG
-        - name: UPDATECLI_PIPELINE_STAGE
         - name: LZC_CLI_TOKEN
           value: {{ requiredEnv "LZC_CLI_TOKEN" }}
   lpkImageUrl:
