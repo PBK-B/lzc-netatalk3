@@ -54,6 +54,7 @@ jobs:
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v3
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           message: |
             [LPK Build] artifact build ok! :wave:
             artifact url: <${{ steps.artifact-upload-step.outputs.artifact-url }}>
