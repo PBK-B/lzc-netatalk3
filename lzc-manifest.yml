@@ -34,7 +34,7 @@ application:
 services:
   netatalk:
     mark: 4.2.3
-    image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:867e0f8860fa7602 # 4.2.3
+    image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:66e939f66ba6594c
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:be2628c05e46154d # 4.2.2
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:bf35131453c46c76 # 4.2.1
     # image: registry.lazycat.cloud/u7842111934/netatalk/netatalk:bd563185e238c1cb # 4.1.2
