@@ -1,0 +1,75 @@
+name: BuildLPK
+
+on:
+    # Manually trigger BuildLPK via GitHub UI
+    workflow_dispatch:
+    # Trigger BuildLPK if a PullRequest is open targeting the main branch.
+    pull_request:
+        types: [opened, synchronize, reopened]
+    issue_comment:
+        types: [created, edited]
+
+permissions:
+    contents: "write"
+    pull-requests: "write"
+
+jobs:
+    buildlpk:
+        if: |
+            github.event_name == 'pull_request' ||
+            (github.event_name == 'issue_comment' && 
+             github.event.issue.pull_request &&
+             contains(github.event.comment.body, '/rebuild') &&
+             contains(fromJSON('["COLLABORATOR", "MEMBER", "OWNER"]'), github.event.comment.author_association)
+            )
+        runs-on: "ubuntu-latest"
+        env:
+            GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+            LZC_CLI_TOKEN: "${{ secrets.LZC_CLI_TOKEN }}"
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Cache node modules
+              id: cache-npm
+              uses: actions/cache@v4
+              env:
+                  cache-name: cache-node-modules
+              with:
+                  # npm cache files are stored in `~/.npm` on Linux/macOS
+                  path: ~/.npm
+                  key: ${{ runner.os }}-build-${{ env.cache-name }}
+                  restore-keys: |
+                      ${{ runner.os }}-build-${{ env.cache-name }}
+
+            - name: Install LZC-CLI
+              run: "npm install -g @lazycatcloud/lzc-cli && npx -y lzc-cli --version"
+
+            - name: Build LPK
+              run: "npx -y lzc-cli project build --output cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk"
+
+            - name: "Upload Artifact"
+              id: artifact-upload-step
+              uses: actions/upload-artifact@v4
+              with:
+                  name: cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
+                  path: "**/cloud.lazycat.app.netatalk-v**.lpk"
+                  retention-days: 5
+
+            - name: Output artifact ID and Url
+              run: echo -e "Artifact ID ${{ steps.artifact-upload-step.outputs.artifact-id }}\nUrl ${{ steps.artifact-upload-step.outputs.artifact-url }}\nPR id ${{ github.event.pull_request.id }}"
+
+            - name: Comment PR
+              uses: thollander/actions-comment-pull-request@v3
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  message: |
+                      [LPK Build] artifact build ok! :wave:
+
+                      artifact url: <${{ steps.artifact-upload-step.outputs.artifact-url }}>
+
+                      ```sh
+                      # install and test
+                      lzc-cli app install cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
+                      ```
