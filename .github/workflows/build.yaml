@@ -54,7 +54,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
-                  path: "**/cloud.lazycat.app.netatalk-v**.lpk"
+                  path: "**/cloud.lazycat.app.netatalk-**.lpk"
                   retention-days: 5
 
             - name: Output artifact ID and Url

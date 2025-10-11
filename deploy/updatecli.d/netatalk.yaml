@@ -99,13 +99,15 @@ targets:
 
 actions:
   default:
-    title: "[chore] bump new netatalk version 🆙"
+    title: '[chore] bump new netatalk version 🆙'
     kind: github/pullrequest
     scmid: default
     target:
       - updateVersion
     spec:
       automerge: false # the repository needs to enable automatic merge permissions
+      maintainercannotmodify: true
       mergemethod: squash
+      reviewers: ["PBK-B"]
       labels:
         - dependencies
