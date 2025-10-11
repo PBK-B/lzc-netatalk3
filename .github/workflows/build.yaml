@@ -37,16 +37,15 @@ jobs:
       - name: Install LZC-CLI
         run: "npm install -g @lazycatcloud/lzc-cli && npx -y lzc-cli --version"
 
-      - name: Cache LPK Releases
-        id: cache-lpk-releases
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-lpk-releases
-        with:
-          path: "**/cloud.lazycat.app.netatalk-v**.lpk"
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/lzc-manifest.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-
       - name: Build LPK
         run: "npx -y lzc-cli project build"
+
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
+          path: "**/cloud.lazycat.app.netatalk-v**.lpk"
+          retention-days: 5
+
+      - name: Output artifact ID and Url
+        run: echo 'Artifact ID ${{ steps.artifact-upload-step.outputs.artifact-id }}\nUrl:${{ steps.artifact-upload-step.outputs.artifact-url }}'
