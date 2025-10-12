@@ -5,7 +5,6 @@ on:
     workflow_dispatch:
     # Trigger BuildLPK if a PullRequest is open targeting the main branch.
     pull_request:
-        types: [opened, synchronize, reopened]
     issue_comment:
         types: [created, edited]
 
@@ -30,6 +29,10 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v2
+              with:
+                  # 对于 issue_comment 事件，获取 PR 的最新 commit
+                  ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || github.sha }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Cache node modules
               id: cache-npm
