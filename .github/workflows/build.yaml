@@ -91,20 +91,21 @@ jobs:
         with:
           cmd: yq '.services.netatalk.mark' lzc-manifest.yml
 
-      - name: Changelog gen
+      - name: Generate release changelog
         id: changelog_content
-        if: github.event_name == 'push' && github.ref_type == 'tag'
-        run: npx -y release-it --ci --changelog
+        uses: janheinrichmerker/action-github-changelog-generator@v2.4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'push' && github.ref_type == 'tag'
         with:
           make_latest: true
-          body: "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs }}"
+          body: "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs.changelog }}"
           files: |
             cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
 
       - name: Publish LPK file to appstore
         if: github.event_name == 'push' && github.ref_type == 'tag'
-        run: npx -y lzc-cli --changelog "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs }}" cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
+        run: npx -y lzc-cli --changelog "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs.changelog }}" cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
