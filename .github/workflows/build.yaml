@@ -130,3 +130,5 @@ jobs:
       - name: Publish LPK file to appstore
         if: github.event_name == 'push' && github.ref_type == 'tag'
         run: npx -y lzc-cli appstore publish --changelog "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}" cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
+        env:
+          LC_ALL: zh_CN # lzc-cil https://yargs.js.org/docs/#api-reference-localelocale
