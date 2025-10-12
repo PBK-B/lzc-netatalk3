@@ -110,11 +110,11 @@ jobs:
       - name: Get the pure tag name
         id: lpk_version
         if: github.event_name == 'push' && github.ref_type == 'tag'
-        run: echo "::set-output name=VERSION::${GITHUB_REF#refs/tags/}"
+        run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
 
       - name: Copy Release File
         if: github.event_name == 'push' && github.ref_type == 'tag'
-        run: cp "cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk" "cloud.lazycat.app.netatalk-${{ steps.lpk_version.outputs.VERSION }}.lpk"
+        run: cp "cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk" "cloud.lazycat.app.netatalk-${{ steps.lpk_version.outputs.version }}.lpk"
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -125,7 +125,7 @@ jobs:
           make_latest: true
           body: "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs.content }}"
           files: |
-            "cloud.lazycat.app.netatalk-${{ steps.lpk_version.outputs.VERSION }}.lpk"
+            "cloud.lazycat.app.netatalk-${{ steps.lpk_version.outputs.version }}.lpk"
 
       - name: Publish LPK file to appstore
         if: github.event_name == 'push' && github.ref_type == 'tag'
