@@ -5,8 +5,12 @@ on:
     workflow_dispatch:
     # Trigger BuildLPK if a PullRequest is open targeting the main branch.
     pull_request:
+        types: [opened, synchronize, reopened, ready_for_review]
     issue_comment:
         types: [created, edited]
+    push:
+        tags:
+            - "v*"
 
 permissions:
     contents: "write"
@@ -46,7 +50,7 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}
 
-            - name: Install LZC-CLI
+            - name: Install lzc-cli
               run: "npm install -g @lazycatcloud/lzc-cli && npx -y lzc-cli --version"
 
             - name: Build LPK
@@ -65,6 +69,7 @@ jobs:
 
             - name: Comment PR
               uses: thollander/actions-comment-pull-request@v3
+              if: github.event.pull_request != null || github.event.issue.pull_request != null
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   message: |
@@ -76,3 +81,14 @@ jobs:
                       # install and test
                       lzc-cli app install cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
                       ```
+
+            - name: Get netatalk latest version
+              id: image_version
+              uses: mikefarah/yq@master
+              if: github.event_name == 'push'
+              with:
+                  cmd: yq '.services.netatalk.mark' lzc-manifest.yml
+
+            - name: Publish LPK file to appstore
+              if: github.event_name == 'push'
+              run: npx -y lzc-cli --changelog "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }} " cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk

@@ -11,12 +11,12 @@ scms:
   default:
     kind: "github"
     spec:
-      user: "PBK-B"
       owner: "PBK-B"
       repository: "lzc-netatalk3"
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
-      username: 'updatecli'
-      email: "updatecli@pbk6.cn"
+      user: "zmbots"
+      username: 'zmbots'
+      email: "devops@zmorg.cn"
       branch: master
       commitmessage:
         type: "chore"
