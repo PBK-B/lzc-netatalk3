@@ -35,10 +35,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        if: github.event_name != 'push'
         with:
           # 对于 issue_comment 事件，获取 PR 的最新 commit
           ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || github.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout fetch depth all
+        uses: actions/checkout@v4
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        with:
+          fetch-depth: 0
 
       - name: Cache node modules
         id: cache-npm
@@ -90,12 +97,6 @@ jobs:
         if: github.event_name == 'push' && github.ref_type == 'tag'
         with:
           cmd: yq '.services.netatalk.mark' lzc-manifest.yml
-
-      - name: Checkout fetch depth all
-        uses: actions/checkout@v4
-        if: github.event_name == 'push' && github.ref_type == 'tag'
-        with:
-          fetch-depth: 0
 
       - name: Generate release changelog
         id: changelog_content
