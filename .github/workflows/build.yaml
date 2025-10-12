@@ -1,94 +1,108 @@
 name: BuildLPK
 
 on:
-    # Manually trigger BuildLPK via GitHub UI
-    workflow_dispatch:
-    # Trigger BuildLPK if a PullRequest is open targeting the main branch.
-    pull_request:
-        types: [opened, synchronize, reopened, ready_for_review]
-    issue_comment:
-        types: [created, edited]
-    push:
-        tags:
-            - "v*"
+  # Manually trigger BuildLPK via GitHub UI
+  workflow_dispatch:
+  # Trigger BuildLPK if a PullRequest is open targeting the main branch.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  issue_comment:
+    types: [created, edited]
+  push:
+    tags:
+      - "v*.*.*"
 
 permissions:
-    contents: "write"
-    pull-requests: "write"
+  contents: "write"
+  pull-requests: "write"
 
 jobs:
-    buildlpk:
-        if: |
-            github.event_name == 'pull_request' ||
-            (github.event_name == 'issue_comment' && 
-             github.event.issue.pull_request &&
-             contains(github.event.comment.body, '/rebuild') &&
-             contains(fromJSON('["COLLABORATOR", "MEMBER", "OWNER"]'), github.event.comment.author_association)
-            )
-        runs-on: "ubuntu-latest"
+  buildlpk:
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' && 
+       github.event.issue.pull_request &&
+       contains(github.event.comment.body, '/rebuild') &&
+       contains(fromJSON('["COLLABORATOR", "MEMBER", "OWNER"]'), github.event.comment.author_association)
+      )
+    runs-on: "ubuntu-latest"
+    env:
+      GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      LZC_CLI_TOKEN: "${{ secrets.LZC_CLI_TOKEN }}"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # 对于 issue_comment 事件，获取 PR 的最新 commit
+          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || github.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v4
         env:
-            GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-            LZC_CLI_TOKEN: "${{ secrets.LZC_CLI_TOKEN }}"
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v2
-              with:
-                  # 对于 issue_comment 事件，获取 PR 的最新 commit
-                  ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || github.sha }}
-                  token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install lzc-cli
+        run: "npm install -g @lazycatcloud/lzc-cli && npx -y lzc-cli --version"
 
-            - name: Cache node modules
-              id: cache-npm
-              uses: actions/cache@v4
-              env:
-                  cache-name: cache-node-modules
-              with:
-                  # npm cache files are stored in `~/.npm` on Linux/macOS
-                  path: ~/.npm
-                  key: ${{ runner.os }}-build-${{ env.cache-name }}
-                  restore-keys: |
-                      ${{ runner.os }}-build-${{ env.cache-name }}
+      - name: Build LPK
+        run: "npx -y lzc-cli project build --output cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk"
 
-            - name: Install lzc-cli
-              run: "npm install -g @lazycatcloud/lzc-cli && npx -y lzc-cli --version"
+      - name: "Upload Artifact"
+        id: artifact-upload-step
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
+          path: "**/cloud.lazycat.app.netatalk-**.lpk"
+          retention-days: 5
 
-            - name: Build LPK
-              run: "npx -y lzc-cli project build --output cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk"
+      - name: Output artifact ID and Url
+        run: echo -e "Artifact ID ${{ steps.artifact-upload-step.outputs.artifact-id }}\nUrl ${{ steps.artifact-upload-step.outputs.artifact-url }}\nPR id ${{ github.event.pull_request.id }}"
 
-            - name: "Upload Artifact"
-              id: artifact-upload-step
-              uses: actions/upload-artifact@v4
-              with:
-                  name: cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
-                  path: "**/cloud.lazycat.app.netatalk-**.lpk"
-                  retention-days: 5
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v3
+        if: github.event.pull_request != null || github.event.issue.pull_request != null
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            [LPK Build] artifact build ok! :wave:
 
-            - name: Output artifact ID and Url
-              run: echo -e "Artifact ID ${{ steps.artifact-upload-step.outputs.artifact-id }}\nUrl ${{ steps.artifact-upload-step.outputs.artifact-url }}\nPR id ${{ github.event.pull_request.id }}"
+            artifact url: <${{ steps.artifact-upload-step.outputs.artifact-url }}>
 
-            - name: Comment PR
-              uses: thollander/actions-comment-pull-request@v3
-              if: github.event.pull_request != null || github.event.issue.pull_request != null
-              with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-                  message: |
-                      [LPK Build] artifact build ok! :wave:
+            ```sh
+            # install and test
+            lzc-cli app install cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
+            ```
 
-                      artifact url: <${{ steps.artifact-upload-step.outputs.artifact-url }}>
+      - name: Get netatalk latest version
+        id: image_version
+        uses: mikefarah/yq@master
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        with:
+          cmd: yq '.services.netatalk.mark' lzc-manifest.yml
 
-                      ```sh
-                      # install and test
-                      lzc-cli app install cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
-                      ```
+      - name: Changelog gen
+        id: changelog_content
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        run: npx -y release-it --ci --changelog
 
-            - name: Get netatalk latest version
-              id: image_version
-              uses: mikefarah/yq@master
-              if: github.event_name == 'push'
-              with:
-                  cmd: yq '.services.netatalk.mark' lzc-manifest.yml
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          make_latest: true
+          body: "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs }}"
+          files: |
+            cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
 
-            - name: Publish LPK file to appstore
-              if: github.event_name == 'push'
-              run: npx -y lzc-cli --changelog "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }} " cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
+      - name: Publish LPK file to appstore
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        run: npx -y lzc-cli --changelog "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs }}" cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
