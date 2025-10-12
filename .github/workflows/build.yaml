@@ -84,12 +84,6 @@ jobs:
             lzc-cli app install cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
             ```
 
-      - name: Checkout
-        uses: actions/checkout@v4
-        if: github.event_name == 'push' && github.ref_type == 'tag'
-        with:
-          fetch-depth: 0
-
       - name: Get netatalk latest version
         id: image_version
         uses: mikefarah/yq@master
@@ -97,17 +91,27 @@ jobs:
         with:
           cmd: yq '.services.netatalk.mark' lzc-manifest.yml
 
+      - name: Checkout fetch depth all
+        uses: actions/checkout@v4
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        with:
+          fetch-depth: 0
+
       - name: Generate release changelog
         id: changelog_content
+        uses: orhun/git-cliff-action@v4
         if: github.event_name == 'push' && github.ref_type == 'tag'
-        run: npx -y release-it --ci --changelog
+        with:
+          args: -vv --latest --strip header
+        env:
+          GITHUB_REPO: ${{ github.repository }}
 
       - name: Release
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'push' && github.ref_type == 'tag'
         with:
           make_latest: true
-          body: "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs }}"
+          body: "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs.content }}"
           files: |
             cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk
 
