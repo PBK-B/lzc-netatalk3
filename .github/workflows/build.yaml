@@ -114,7 +114,8 @@ jobs:
 
       - name: Copy Release File
         if: github.event_name == 'push' && github.ref_type == 'tag'
-        run: cp "cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk" "cloud.lazycat.app.netatalk-${{ steps.lpk_version.outputs.version }}.lpk"
+        run: |
+          cp "cloud.lazycat.app.netatalk-${{ hashFiles('**/lzc-manifest.yml') }}.lpk" "cloud.lazycat.app.netatalk-${{ steps.lpk_version.outputs.version }}.lpk"
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -125,7 +126,7 @@ jobs:
           make_latest: true
           body: "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs.content }}"
           files: |
-            "cloud.lazycat.app.netatalk-${{ steps.lpk_version.outputs.version }}.lpk"
+            cloud.lazycat.app.netatalk-${{ steps.lpk_version.outputs.version }}.lpk
 
       - name: Publish LPK file to appstore
         if: github.event_name == 'push' && github.ref_type == 'tag'
