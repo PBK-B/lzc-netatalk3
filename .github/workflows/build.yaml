@@ -124,7 +124,7 @@ jobs:
           draft: false
           prerelease: false
           make_latest: true
-          body: "[update] bump netatalk/netatalk image v${{ steps.image_version.outputs.result }}\n${{ steps.changelog_content.outputs.content }}"
+          body: "${{ steps.changelog_content.outputs.content }}\n###💼 Other\n- [update] bump netatalk/netatalk docker image v${{ steps.image_version.outputs.result }}"
           files: |
             cloud.lazycat.app.netatalk-${{ steps.lpk_version.outputs.version }}.lpk
 

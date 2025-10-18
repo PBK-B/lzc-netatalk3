@@ -2,11 +2,6 @@
 ## netatalk.yaml
 name: Update Netatalk
 
-x-changedif: &shared-changedif
-  kind: shell
-  spec:
-    command: test "{{ source "lpkImageUrl" }}" "==" "{{ source "copyImageUrl" }}"
-
 scms:
   default:
     kind: "github"
@@ -21,10 +16,12 @@ scms:
       commitmessage:
         type: "chore"
         scope: "deps"
+        hidecredit: true
+        squash: true
 
 sources:
-  netatalkVersion:
-    name: Get the latest netatalk/netatalk version
+  imageVersion:
+    name: Get the latest docker image version
     kind: dockerimage
     disablesourceinput: true
     spec:
@@ -32,12 +29,24 @@ sources:
       versionfilter: 
         kind: semver
         pattern: '*'
+
+  currentImageVersion:
+    name: Get LPK Image mark
+    scmid: default
+    kind: yaml
+    spec:
+      file: lzc-manifest.yml
+      key: $.services.netatalk.mark
+
   copyImageUrl:
     kind: shell
-    sourceid: netatalkVersion
+    dependson:
+      - 'condition#versionNewer:and'
+    disablesourceinput: true
     spec:
       command: |
-        npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "netatalkVersion" }}" --trace-level=quiet
+        set -xe
+        npx -y @lazycatcloud/lzc-cli appstore copy-image "netatalk/netatalk:{{ source "imageVersion" }}" --trace-level=quiet
       environments:
         - name: PATH # https://github.com/updatecli/updatecli/blob/045a2956/pkg/plugins/resources/shell/main.go#L98
         - name: HOME
@@ -45,6 +54,7 @@ sources:
         - name: LANG
         - name: LZC_CLI_TOKEN
           value: {{ requiredEnv "LZC_CLI_TOKEN" }}
+
   lpkImageUrl:
     name: Get LPK Image URL
     scmid: default
@@ -52,8 +62,9 @@ sources:
     spec:
       file: lzc-manifest.yml
       key: $.services.netatalk.image
-  currentVersion:
-    name: "Get current version"
+
+  previewVersion:
+    name: "Get preview version"
     scmid: default
     kind: yaml
     transformers:
@@ -62,40 +73,69 @@ sources:
       file: lzc-manifest.yml
       key: $.version
 
+conditions:
+  versionNewer:
+    kind: shell
+    disablesourceinput: true
+    spec:
+      command: |
+        set -xe
+        current="{{ source "currentImageVersion" }}"
+        new="{{ source "imageVersion" }}"
+        test -n "$current"
+        test -n "$new"
+        test "$current" != "$new"
+
+  imageCopySuccess:
+    dependson:
+      - 'condition#versionNewer:and'
+    kind: shell
+    disablesourceinput: true
+    spec:
+      command: |
+        set -xe
+        test -n "{{ trim (source "copyImageUrl") }}"
+        test "{{ source "lpkImageUrl" }}" "!=" "{{ source "copyImageUrl" }}"
 
 targets:
   updateImage:
-    name: bump netatalk/netatalk docker image tag
+    name: bump docker image tag
     scmid: default
     kind: yaml
+    dependson:
+      - 'condition#versionNewer:and'
+      - 'condition#imageCopySuccess:and'
     sourceid: copyImageUrl
     spec:
       file: lzc-manifest.yml
       key: $.services.netatalk.image
-      changedif: *shared-changedif
+      quote: false
 
   updateImageCode:
-    name: bump netatalk/netatalk docker image tag code
+    name: bump docker image tag code
     scmid: default
     kind: yaml
-    sourceid: netatalkVersion
+    dependson:
+      - 'condition#versionNewer:and'
+      - 'condition#imageCopySuccess:and'
+    sourceid: imageVersion
     spec:
       file: lzc-manifest.yml
       key: $.services.netatalk.mark
       quote: false
-      changedif: *shared-changedif
 
   updateVersion:
     name: update version in manifest.yml
     scmid: default
     kind: yaml
-    dependson: ['updateImageCode']
-    dependsonchange: true
-    sourceid: currentVersion
+    dependson:
+      - 'condition#versionNewer:and'
+      - 'condition#imageCopySuccess:and'
+    sourceid: previewVersion
     spec:
       file: lzc-manifest.yml
       key: $.version
-      value: '{{ source "currentVersion" }}'
+      value: '{{ source "previewVersion" }}'
 
 actions:
   default:
